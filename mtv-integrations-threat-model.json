@@ -1,0 +1,865 @@
+{
+  "version": "2.2.0",
+  "summary": {
+    "title": "MTV Integrations Threat Model",
+    "owner": "MTV Integrations Team",
+    "description": "Threat model for Migration Toolkit for Virtualization (MTV) integrations with Advanced Cluster Management (ACM)",
+    "id": 1
+  },
+  "detail": {
+    "contributors": [
+      {
+        "name": "Security Team"
+      },
+      {
+        "name": "MTV Integrations Team"
+      }
+    ],
+    "diagrams": [
+      {
+        "id": 1,
+        "title": "MTV Integrations System Architecture",
+        "diagramType": "STRIDE",
+        "placeholder": "New STRIDE diagram description",
+        "thumbnail": "./public/content/images/thumbnail.stride.jpg",
+        "version": "2.2.0",
+        "cells": [
+          {
+            "position": {
+              "x": 50,
+              "y": 100
+            },
+            "size": {
+              "width": 112.5,
+              "height": 60
+            },
+            "attrs": {
+              "text": {
+                "text": "User/Admin"
+              },
+              "body": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "actor",
+            "id": "user-admin",
+            "zIndex": 1,
+            "data": {
+              "type": "tm.Actor",
+              "name": "User/Admin",
+              "description": "Administrative users creating and managing MTV migration plans",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "providesAuthentication": false,
+              "threats": [
+                {
+                  "id": "T002",
+                  "title": "User Impersonation in Webhook",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Spoofing",
+                  "description": "Malicious actors could attempt to impersonate legitimate users during plan validation.",
+                  "mitigation": "Kubernetes admission control framework validation, TLS mutual authentication required, User context passed from Kubernetes API server",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 2,
+                  "score": ""
+                }
+              ]
+            }
+          },
+          {
+            "position": {
+              "x": 300,
+              "y": 100
+            },
+            "size": {
+              "width": 100,
+              "height": 100
+            },
+            "attrs": {
+              "text": {
+                "text": "MTV Plan\nWebhook"
+              },
+              "body": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "process",
+            "id": "plan-webhook",
+            "zIndex": 2,
+            "data": {
+              "type": "tm.Process",
+              "name": "MTV Plan Webhook",
+              "description": "Validating admission webhook for MTV Plan resources (/validate-plan endpoint)",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "providesAuthentication": false,
+              "threats": [
+                {
+                  "id": "T011",
+                  "title": "Webhook Endpoint Flooding",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Denial of service",
+                  "description": "Overwhelming the webhook endpoint could prevent legitimate migration plans.",
+                  "mitigation": "Controller runtime built-in rate limiting, Kubernetes API server admission control timeouts",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 11,
+                  "score": ""
+                },
+                {
+                  "id": "T016",
+                  "title": "Webhook Admission Controller Bypass",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Elevation of privilege",
+                  "description": "Bypassing webhook validation to create unauthorized plans.",
+                  "mitigation": "Kubernetes admission controller framework, Fail-closed webhook configuration, TLS authentication requirement",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 16,
+                  "score": ""
+                }
+              ]
+            }
+          },
+          {
+            "position": {
+              "x": 550,
+              "y": 100
+            },
+            "size": {
+              "width": 100,
+              "height": 100
+            },
+            "attrs": {
+              "text": {
+                "text": "Provider Manager\nController"
+              },
+              "body": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "process",
+            "id": "provider-controller",
+            "zIndex": 3,
+            "data": {
+              "type": "tm.Process",
+              "name": "Provider Manager Controller",
+              "description": "ManagedClusterReconciler that integrates ACM managed clusters as MTV providers",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "providesAuthentication": false,
+              "threats": [
+                {
+                  "id": "T012",
+                  "title": "Controller Resource Exhaustion",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Denial of service",
+                  "description": "Resource exhaustion could prevent provider management operations.",
+                  "mitigation": "Container resource limits in deployment, Leader election prevents multiple active controllers",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 12,
+                  "score": ""
+                },
+                {
+                  "id": "T015",
+                  "title": "RBAC Bypass Through Dynamic Client",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Elevation of privilege",
+                  "description": "Exploitation of dynamic client permissions to exceed intended privileges.",
+                  "mitigation": "Scoped RBAC permissions in controller deployment, Controller runtime built-in authorization",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 15,
+                  "score": ""
+                }
+              ]
+            }
+          },
+          {
+            "position": {
+              "x": 300,
+              "y": 300
+            },
+            "size": {
+              "width": 120,
+              "height": 80
+            },
+            "attrs": {
+              "text": {
+                "text": "Provider Secrets"
+              },
+              "body": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "store",
+            "id": "provider-secrets",
+            "zIndex": 4,
+            "data": {
+              "type": "tm.Store",
+              "name": "Provider Secrets",
+              "description": "Kubernetes secrets containing authentication tokens, CA certificates, and kubeconfig data",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isALog": false,
+              "isEncrypted": true,
+              "isSigned": false,
+              "storesCredentials": true,
+              "storesInventory": false,
+              "threats": [
+                {
+                  "id": "T001",
+                  "title": "Service Account Token Impersonation",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Spoofing",
+                  "description": "An attacker could attempt to forge or steal service account tokens used for cross-cluster authentication.",
+                  "mitigation": "Token rotation every 60 minutes, TLS encryption for token transmission, Kubernetes native token validation",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 1,
+                  "score": ""
+                },
+                {
+                  "id": "T004",
+                  "title": "Provider Secret Manipulation",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Tampering",
+                  "description": "Unauthorized modification of provider secrets could redirect cluster access.",
+                  "mitigation": "Kubernetes RBAC on secret resources, Controller ownership and reconciliation, Secret data integrity through Kubernetes etcd",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 4,
+                  "score": ""
+                },
+                {
+                  "id": "T008",
+                  "title": "Secret Exposure in Logs",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Information disclosure",
+                  "description": "Sensitive data could be logged accidentally exposing authentication tokens.",
+                  "mitigation": "Structured logging with field filtering",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 8,
+                  "score": ""
+                },
+                {
+                  "id": "T009",
+                  "title": "Memory Dumps Containing Secrets",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Information disclosure",
+                  "description": "Process memory dumps could contain authentication tokens or private keys.",
+                  "mitigation": "Container runtime security boundaries, Non-root process execution (UID 65532)",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 9,
+                  "score": ""
+                }
+              ]
+            }
+          },
+          {
+            "position": {
+              "x": 550,
+              "y": 300
+            },
+            "size": {
+              "width": 120,
+              "height": 80
+            },
+            "attrs": {
+              "text": {
+                "text": "ClusterPermissions"
+              },
+              "body": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "store",
+            "id": "cluster-permissions",
+            "zIndex": 5,
+            "data": {
+              "type": "tm.Store",
+              "name": "ClusterPermissions",
+              "description": "RBAC permissions granting cluster-admin privileges to managed service accounts",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isALog": false,
+              "isEncrypted": false,
+              "isSigned": false,
+              "storesCredentials": false,
+              "storesInventory": false,
+              "threats": [
+                {
+                  "id": "T006",
+                  "title": "ClusterPermission Escalation",
+                  "status": "Open",
+                  "severity": "Critical",
+                  "type": "Elevation of privilege",
+                  "description": "Modification of cluster permissions to grant excessive privileges could lead to full cluster compromise.",
+                  "mitigation": "Controller-managed lifecycle with finalizers, Limited to specific ManagedCluster lifecycle, Kubernetes RBAC on ClusterPermission resources",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 6,
+                  "score": ""
+                }
+              ]
+            }
+          },
+          {
+            "position": {
+              "x": 50,
+              "y": 300
+            },
+            "size": {
+              "width": 120,
+              "height": 80
+            },
+            "attrs": {
+              "text": {
+                "text": "TLS Certificates"
+              },
+              "body": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "store",
+            "id": "tls-certificates",
+            "zIndex": 6,
+            "data": {
+              "type": "tm.Store",
+              "name": "TLS Certificates",
+              "description": "X.509 certificates for webhook and metrics server TLS authentication",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isALog": false,
+              "isEncrypted": false,
+              "isSigned": true,
+              "storesCredentials": true,
+              "storesInventory": false,
+              "threats": [
+                {
+                  "id": "T003",
+                  "title": "Certificate Authority Compromise",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Spoofing",
+                  "description": "Compromise of CA certificates could allow certificate forgery and complete TLS bypass.",
+                  "mitigation": "Certificate rotation through cert-manager integration, Separate certificate watchers for different components",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 3,
+                  "score": ""
+                },
+                {
+                  "id": "T013",
+                  "title": "Certificate Renewal Failure",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Denial of service",
+                  "description": "Failed certificate renewal could cause complete service unavailability.",
+                  "mitigation": "Automatic certificate watching and reloading, Certificate manager integration",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 13,
+                  "score": ""
+                }
+              ]
+            }
+          },
+          {
+            "position": {
+              "x": 800,
+              "y": 100
+            },
+            "size": {
+              "width": 112.5,
+              "height": 60
+            },
+            "attrs": {
+              "text": {
+                "text": "Managed Clusters"
+              },
+              "body": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "actor",
+            "id": "managed-clusters",
+            "zIndex": 7,
+            "data": {
+              "type": "tm.Actor",
+              "name": "Managed Clusters",
+              "description": "ACM managed clusters that will be registered as MTV providers",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "providesAuthentication": false,
+              "threats": [
+                {
+                  "id": "T010",
+                  "title": "Network Traffic Interception",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Information disclosure",
+                  "description": "Network traffic between clusters could be intercepted revealing tokens/data.",
+                  "mitigation": "TLS encryption for webhook communications, Kubernetes service mesh integration potential",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 10,
+                  "score": ""
+                }
+              ]
+            }
+          },
+          {
+            "position": {
+              "x": 300,
+              "y": 450
+            },
+            "size": {
+              "width": 100,
+              "height": 100
+            },
+            "attrs": {
+              "text": {
+                "text": "Container\nRuntime"
+              },
+              "body": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "process",
+            "id": "container-runtime",
+            "zIndex": 8,
+            "data": {
+              "type": "tm.Process",
+              "name": "Container Runtime",
+              "description": "Container execution environment running controller and webhook processes",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "providesAuthentication": false,
+              "threats": [
+                {
+                  "id": "T014",
+                  "title": "Container Escape to Host",
+                  "status": "Open",
+                  "severity": "Critical",
+                  "type": "Elevation of privilege",
+                  "description": "Container breakout could provide host-level access and complete system compromise.",
+                  "mitigation": "Non-root container execution (UID 65532), Container security contexts, Read-only root filesystem potential",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 14,
+                  "score": ""
+                }
+              ]
+            }
+          },
+          {
+            "source": {
+              "x": 162.5,
+              "y": 130
+            },
+            "target": {
+              "x": 300,
+              "y": 150
+            },
+            "vertices": [],
+            "id": "flow-1",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "labels": [
+              {
+                "attrs": {
+                  "text": {
+                    "text": "Creates/Updates\nMTV Plans"
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "shape": "flow",
+            "zIndex": 10,
+            "data": {
+              "type": "tm.Flow",
+              "name": "Plan Creation Flow",
+              "description": "User creates or updates MTV migration plans",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "HTTPS",
+              "threats": [
+                {
+                  "id": "T005",
+                  "title": "Plan Resource Modification",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Tampering",
+                  "description": "Direct modification of plan resources bypassing webhook validation.",
+                  "mitigation": "Validating admission webhook enforces policy, RBAC controls on Plan resources, Controller runtime validation",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 5,
+                  "score": ""
+                }
+              ]
+            }
+          },
+          {
+            "source": {
+              "x": 400,
+              "y": 150
+            },
+            "target": {
+              "x": 550,
+              "y": 150
+            },
+            "vertices": [],
+            "id": "flow-2",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "labels": [
+              {
+                "attrs": {
+                  "text": {
+                    "text": "Validation\nRequests"
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "shape": "flow",
+            "zIndex": 11,
+            "data": {
+              "type": "tm.Flow",
+              "name": "Webhook Validation Flow",
+              "description": "Webhook validates plans and checks user permissions",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": true,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "HTTPS"
+            }
+          },
+          {
+            "source": {
+              "x": 650,
+              "y": 150
+            },
+            "target": {
+              "x": 800,
+              "y": 130
+            },
+            "vertices": [],
+            "id": "flow-3",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "labels": [
+              {
+                "attrs": {
+                  "text": {
+                    "text": "Provider\nRegistration"
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "shape": "flow",
+            "zIndex": 12,
+            "data": {
+              "type": "tm.Flow",
+              "name": "Provider Registration Flow",
+              "description": "Controller registers managed clusters as MTV providers",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "HTTPS"
+            }
+          },
+          {
+            "source": {
+              "x": 600,
+              "y": 200
+            },
+            "target": {
+              "x": 360,
+              "y": 300
+            },
+            "vertices": [],
+            "id": "flow-4",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "labels": [
+              {
+                "attrs": {
+                  "text": {
+                    "text": "Creates/Updates\nSecrets"
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "shape": "flow",
+            "zIndex": 13,
+            "data": {
+              "type": "tm.Flow",
+              "name": "Secret Management Flow",
+              "description": "Controller manages provider authentication secrets",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "Kubernetes API"
+            }
+          },
+          {
+            "source": {
+              "x": 600,
+              "y": 200
+            },
+            "target": {
+              "x": 610,
+              "y": 300
+            },
+            "vertices": [],
+            "id": "flow-5",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "labels": [
+              {
+                "attrs": {
+                  "text": {
+                    "text": "Manages\nRBAC"
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "shape": "flow",
+            "zIndex": 14,
+            "data": {
+              "type": "tm.Flow",
+              "name": "RBAC Management Flow",
+              "description": "Controller manages cluster permissions and RBAC",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "Kubernetes API"
+            }
+          },
+          {
+            "source": {
+              "x": 170,
+              "y": 340
+            },
+            "target": {
+              "x": 300,
+              "y": 150
+            },
+            "vertices": [],
+            "id": "flow-6",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "labels": [
+              {
+                "attrs": {
+                  "text": {
+                    "text": "TLS\nAuthentication"
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "shape": "flow",
+            "zIndex": 15,
+            "data": {
+              "type": "tm.Flow",
+              "name": "TLS Authentication Flow",
+              "description": "TLS certificates secure webhook communications",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "TLS"
+            }
+          },
+          {
+            "source": {
+              "x": 350,
+              "y": 450
+            },
+            "target": {
+              "x": 350,
+              "y": 200
+            },
+            "vertices": [],
+            "id": "flow-7",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "labels": [
+              {
+                "attrs": {
+                  "text": {
+                    "text": "Process\nExecution"
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "shape": "flow",
+            "zIndex": 16,
+            "data": {
+              "type": "tm.Flow",
+              "name": "Container Execution Flow",
+              "description": "Container runtime executes webhook and controller processes",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "Container Runtime"
+            }
+          },
+          {
+            "source": {
+              "x": 400,
+              "y": 500
+            },
+            "target": {
+              "x": 550,
+              "y": 150
+            },
+            "vertices": [],
+            "id": "flow-8",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "labels": [
+              {
+                "attrs": {
+                  "text": {
+                    "text": "Process\nExecution"
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "shape": "flow",
+            "zIndex": 17,
+            "data": {
+              "type": "tm.Flow",
+              "name": "Container Controller Flow",
+              "description": "Container runtime executes controller process",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "Container Runtime"
+            }
+          }
+        ]
+      }
+    ],
+    "reviewer": "Security Team"
+  }
+}
