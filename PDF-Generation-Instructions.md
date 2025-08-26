@@ -305,3 +305,4 @@ qpdf --encrypt user_pass owner_pass 256 -- \
 ---
 
 **Note**: Choose the method that best fits your environment and requirements. For official reports, pandoc with LaTeX provides the highest quality output.
+

@@ -126,3 +126,4 @@ echo ""
 echo "📖 For more options, see: PDF-Generation-Instructions.md"
 echo ""
 echo "🎉 Report generation complete!"
+
