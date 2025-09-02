@@ -13,13 +13,14 @@ This directory contains comprehensive security documentation for the MTV Integra
 - Compliance considerations (NIST, OWASP, CIS, SOC 2, ISO 27001)
 - Testing and validation recommendations
 
-### [architecture/threat-model-dataflow.md](architecture/threat-model-dataflow.md)
+### [architecture/threat-model-dataflow.md](architecture/threat-model-dataflow.md) | [dataflow.png](dataflow.png) 
 **Visual data flow diagram with security analysis**
-- Mermaid diagram showing system architecture
+- Mermaid diagram showing system architecture  
 - Trust boundaries and security controls
 - Authentication and authorization flows
 - Identified threat vectors and attack paths
 - Component legend and security annotations
+- **High-resolution PNG available** (1200x800, 128K)
 
 ### [mtv-integrations-threat-model.json](mtv-integrations-threat-model.json)
 **Interactive Threat Dragon model**
@@ -45,6 +46,31 @@ This directory contains comprehensive security documentation for the MTV Integra
 - Incident response, compliance, and governance assessment
 - STRIDE threat analysis with risk assessment
 - Security controls evaluation and improvement recommendations
+
+### [ThreatModel-MTV-Integrations-SecurityDesignQuestionnaire.md](ThreatModel-MTV-Integrations-SecurityDesignQuestionnaire.md)
+**Red Hat/ACM-Style Security Design Questionnaire** (Based on DR4Hub Template)
+- Component details with feature breakdown and external dependencies
+- Data flow analysis with Threat Dragon integration
+- Data at rest security and credential management
+- Comprehensive logging and Events of Interest coverage
+- Detailed operator RBAC analysis with privilege justification
+- FIPS compliance checklist and runtime security analysis
+- Follows exact Red Hat secure engineering questionnaire format
+
+### [architecture/mtv-integrations-architecture.md](architecture/mtv-integrations-architecture.md) | [architecture.png](architecture.png)
+**System Architecture Diagram**
+- Complete system architecture with component relationships
+- ACM Hub cluster, managed clusters, and external systems
+- Security boundaries and trust zones
+- Component dependencies and data flows
+- **High-resolution PNG available** (1400x1000, 56K)
+
+### [DIAGRAMS-README.md](DIAGRAMS-README.md)
+**Diagram Documentation and Usage Guide**
+- PNG diagram specifications and usage instructions
+- Color coding and legend explanations  
+- Integration with threat model and security documentation
+- Regeneration processes and maintenance guidelines
 
 ## 🚨 Critical Security Findings
 
