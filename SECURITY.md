@@ -72,6 +72,13 @@ This directory contains comprehensive security documentation for the MTV Integra
 - Integration with threat model and security documentation
 - Regeneration processes and maintenance guidelines
 
+### [SONARQUBE-SETUP.md](SONARQUBE-SETUP.md)
+**SonarQube Configuration and Test Coverage**
+- Fixed zero test coverage issue (now 65.2% coverage)
+- Proper sonar-project.properties configuration
+- Coverage generation scripts and CI integration
+- Troubleshooting guide for coverage and quality analysis
+
 ## 🚨 Critical Security Findings
 
 ### Immediate Attention Required
