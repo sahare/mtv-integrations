@@ -1,5 +1,5 @@
 # Build the manager binary
-FROM registry.ci.openshift.org/stolostron/builder:go1.24-linux@sha256:6781bb308a729113dec263a9afcfa66c10cb248b854796cd37bae65a7e273bd1 AS builder
+FROM registry.ci.openshift.org/stolostron/builder:go1.24-linux@sha256:e648b07f9703d95184aadb6111494641cd4292aa2ab8517128e75c20e142cdb2 AS builder
 ARG TARGETOS
 ARG TARGETARCH
 
@@ -25,7 +25,7 @@ RUN CGO_ENABLED=1 GOOS=${TARGETOS:-linux} go build -a -mod=mod -o manager cmd/ma
 
 # Use distroless as minimal base image to package the manager binary
 # Refer to https://github.com/GoogleContainerTools/distroless for more details
-FROM registry.access.redhat.com/ubi9/ubi-minimal:latest@sha256:2f06ae0e6d3d9c4f610d32c480338eef474867f435d8d28625f2985e8acde6e8
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest@sha256:7c5495d5fad59aaee12abc3cbbd2b283818ee1e814b00dbc7f25bf2d14fa4f0c
 WORKDIR /
 COPY --from=builder /workspace/manager .
 USER 65532:65532
